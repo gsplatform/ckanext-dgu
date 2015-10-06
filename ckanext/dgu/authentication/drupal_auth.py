@@ -273,7 +273,7 @@ class DrupalAuthMiddleware(object):
         should_be_sysadmin = bool(set(('administrator', 'package admin', 'publisher admin', 'ckan administrator')) & set(drupal_roles))
         if should_be_sysadmin and not user.sysadmin:
             # Make user a sysadmin
-            user.syadmin = True
+            user.sysadmin = True
             log.info('User made a sysadmin: %s', user_name)
             needs_commit = True
         elif not should_be_sysadmin and user.sysadmin:
