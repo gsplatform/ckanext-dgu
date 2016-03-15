@@ -158,10 +158,13 @@ class DrupalAuthMiddleware(object):
 
                     # Just check that authtkt cookie is not too old - in the
                     # mean-time, Drupal may have invalidated the user, for example.
-                    if self.is_authtkt_cookie_too_old(authtkt_identity):
-                        log.info('Rechecking Drupal cookie')
-                        self._log_out(environ, new_headers)
-                        self._do_drupal_login(environ, drupal_session_id, new_headers)
+                    #if self.is_authtkt_cookie_too_old(authtkt_identity):
+                    #    log.info('Rechecking Drupal cookie')
+                    #    self._log_out(environ, new_headers)
+                    #    self._do_drupal_login(environ, drupal_session_id, new_headers)
+                    log.info('Rechecking Drupal cookie')
+                    self._log_out(environ, new_headers)
+                    self._do_drupal_login(environ, drupal_session_id, new_headers)
                     return
             else:
                 # There's a Drupal cookie, but user is logged in as a normal CKAN user.
@@ -220,6 +223,11 @@ class DrupalAuthMiddleware(object):
             log.debug('Drupal user added to CKAN as: %s', user.name)
         else:
             user = query.one()
+            if ((user.fullname != unicode(user_properties['name']))
+                    or (user.email != user_properties['mail'])):
+                user.fullname=unicode(user_properties['name'])
+                user.email != user_properties['mail']
+                Session.commit()
             log.debug('Drupal user found in CKAN: %s', user.name)
 
         self.set_roles(ckan_user_name, user_properties['roles'].values())
